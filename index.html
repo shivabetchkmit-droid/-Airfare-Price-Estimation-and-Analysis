@@ -1,0 +1,754 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Airfare AI | Flight Price Intelligence</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --bg: #080d19;
+    --card: #111a2c;
+    --blue: #48aaff;
+    --cyan: #38e2dc;
+    --text: #f4f7ff;
+    --muted: #9ba9c1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    background: #1464ff;
+    filter: blur(180px);
+    opacity: .15;
+    top: -250px;
+    left: -200px;
+    z-index: -1;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 8%;
+    border-bottom: 1px solid #ffffff12;
+    position: sticky;
+    top: 0;
+    background: #080d19eF;
+    backdrop-filter: blur(15px);
+    z-index: 100;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--cyan);
+}
+
+nav a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 28px;
+    font-size: 13px;
+    transition: .3s;
+}
+
+nav a:hover {
+    color: var(--cyan);
+}
+
+.hero {
+    min-height: 650px;
+    padding: 110px 8% 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+
+.hero-content {
+    max-width: 650px;
+}
+
+.tag {
+    display: inline-block;
+    color: var(--cyan);
+    border: 1px solid #38e2dc55;
+    background: #38e2dc0d;
+    border-radius: 30px;
+    padding: 9px 17px;
+    font-size: 12px;
+    margin-bottom: 25px;
+}
+
+h1 {
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 1.08;
+    letter-spacing: -4px;
+    font-weight: 900;
+}
+
+h1 span {
+    background: linear-gradient(90deg, #48aaff, #38e2dc);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.9;
+    margin: 25px 0 30px;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 15px 25px;
+    border-radius: 9px;
+    background: linear-gradient(90deg, #2788ff, #36c9db);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    transition: .3s;
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px #2788ff44;
+}
+
+.secondary {
+    background: transparent;
+    border: 1px solid #ffffff33;
+    margin-left: 10px;
+}
+
+.flight-card {
+    width: 340px;
+    padding: 28px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #182945, #0d1423);
+    border: 1px solid #ffffff20;
+    box-shadow: 0 30px 80px #0008;
+    transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+    transition: .5s;
+}
+
+.flight-card:hover {
+    transform: perspective(1000px) rotateY(0) rotateX(0) translateY(-10px);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.airplane {
+    font-size: 55px;
+    text-align: center;
+    margin: 35px 0;
+    filter: drop-shadow(0 0 20px #38e2dc88);
+}
+
+.route {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.city {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.city small {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 400;
+    margin-top: 7px;
+}
+
+.line {
+    height: 1px;
+    width: 70px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    position: relative;
+}
+
+.line::after {
+    content: "✈";
+    position: absolute;
+    right: 25px;
+    top: -14px;
+    color: var(--cyan);
+    font-size: 20px;
+}
+
+.price {
+    margin-top: 35px;
+    padding-top: 20px;
+    border-top: 1px solid #ffffff18;
+}
+
+.price small {
+    color: var(--muted);
+}
+
+.price h2 {
+    color: var(--cyan);
+    margin-top: 7px;
+    font-size: 30px;
+}
+
+section {
+    padding: 85px 8%;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.section-heading h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -1.5px;
+}
+
+.section-heading p {
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.7;
+}
+
+.about {
+    background: #0c1423;
+    border-top: 1px solid #ffffff0c;
+    border-bottom: 1px solid #ffffff0c;
+}
+
+.about-text {
+    max-width: 850px;
+    margin: auto;
+    color: var(--muted);
+    text-align: center;
+    line-height: 2;
+    font-size: 15px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.card {
+    background: linear-gradient(145deg, #141f33, #0c1423);
+    padding: 30px;
+    border: 1px solid #ffffff12;
+    border-radius: 16px;
+    transition: .35s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    border-color: #38e2dc77;
+    box-shadow: 0 15px 35px #0005;
+}
+
+.icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.card h3 {
+    font-size: 17px;
+    margin-bottom: 12px;
+}
+
+.card p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.algorithms {
+    background: #0c1423;
+}
+
+.algorithm-card {
+    text-align: center;
+}
+
+.algorithm-card .icon {
+    font-size: 38px;
+}
+
+.workflow {
+    max-width: 850px;
+    margin: auto;
+}
+
+.step {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 25px;
+    align-items: flex-start;
+}
+
+.number {
+    min-width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2788ff, #38e2dc);
+    color: white;
+    font-weight: 800;
+}
+
+.step h3 {
+    margin-bottom: 8px;
+}
+
+.step p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.metrics {
+    background: linear-gradient(110deg, #101e35, #102b3b);
+    border: 1px solid #ffffff15;
+    border-radius: 20px;
+    padding: 45px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    text-align: center;
+}
+
+.metrics h2 {
+    color: var(--cyan);
+    font-size: 27px;
+}
+
+.metrics p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.disclaimer {
+    margin-top: 30px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+footer {
+    padding: 35px 8%;
+    border-top: 1px solid #ffffff15;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 2;
+}
+
+footer strong {
+    color: var(--cyan);
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: .7s;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media(max-width: 850px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 75px;
+    }
+
+    .flight-card {
+        transform: none;
+        width: min(100%, 340px);
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    nav {
+        padding: 20px 5%;
+    }
+
+    nav a {
+        margin-left: 10px;
+        font-size: 11px;
+    }
+}
+
+@media(max-width: 550px) {
+    nav {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav div:last-child {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    nav a {
+        margin: 0;
+    }
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metrics {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        letter-spacing: -2px;
+    }
+
+    section {
+        padding: 65px 6%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="logo">AIRFARE<span>AI.</span></div>
+    <div>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#technology">Technology</a>
+        <a href="#workflow">Workflow</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+
+<header class="hero" id="home">
+
+    <div class="hero-content">
+        <div class="tag">✦ MACHINE LEARNING PROJECT</div>
+
+        <h1>
+            Understand Flights.<br>
+            Predict <span>Prices.</span>
+        </h1>
+
+        <p>
+            Airfare Price Estimation and Fare Pattern Analysis
+            is a machine learning project designed to estimate
+            flight ticket prices using airline, route, journey date,
+            duration, number of stops and other travel attributes.
+        </p>
+
+        <a href="#about" class="btn">Explore Project →</a>
+        <a href="#technology" class="btn secondary">Our Technology</a>
+    </div>
+
+    <div class="flight-card">
+        <div class="card-top">
+            <span>✈ FLIGHT OVERVIEW</span>
+            <span>INDIA</span>
+        </div>
+
+        <div class="airplane">✈️</div>
+
+        <div class="route">
+            <div class="city">
+                HYD
+                <small>Hyderabad</small>
+            </div>
+
+            <div class="line"></div>
+
+            <div class="city">
+                DEL
+                <small>New Delhi</small>
+            </div>
+        </div>
+
+        <div class="price">
+            <small>AI-POWERED FARE ESTIMATION</small>
+            <h2>Coming Soon</h2>
+            <small>Prediction engine under development</small>
+        </div>
+    </div>
+
+</header>
+
+<!-- ABOUT -->
+
+<section class="about" id="about">
+    <div class="section-heading reveal">
+        <h2>About The Project</h2>
+        <p>Turning flight data into meaningful insights.</p>
+    </div>
+
+    <div class="about-text reveal">
+        Airfare prices can change depending on several factors,
+        including the airline, destination, travel date, journey
+        duration and number of stops.
+
+        <br><br>
+
+        This project uses machine learning and data analysis
+        techniques to study historical flight data, identify
+        important fare patterns and develop a model that can
+        estimate airfare based on user-provided flight details.
+
+        <br><br>
+
+        Our goal is to make flight price estimation easier to
+        understand through data-driven predictions.
+    </div>
+</section>
+
+<!-- FEATURES -->
+
+<section id="features">
+    <div class="section-heading reveal">
+        <h2>Project Objectives</h2>
+        <p>What this machine learning project aims to achieve.</p>
+    </div>
+
+    <div class="grid">
+
+        <div class="card reveal">
+            <div class="icon">💰</div>
+            <h3>Fare Estimation</h3>
+            <p>Estimate flight ticket prices using historical flight information and machine learning models.</p>
+        </div>
+
+        <div class="card reveal">
+            <div class="icon">📊</div>
+            <h3>Data Analysis</h3>
+            <p>Explore historical flight records and understand patterns in airfare data.</p>
+        </div>
+
+        <div class="card reveal">
+            <div class="icon">✈️</div>
+            <h3>Airline Comparison</h3>
+            <p>Study how different airlines are associated with variations in ticket prices.</p>
+        </div>
+
+        <div class="card reveal">
+            <div class="icon">📅</div>
+            <h3>Date Analysis</h3>
+            <p>Analyze how journey dates, days and months relate to airfare changes.</p>
+        </div>
+
+        <div class="card reveal">
+            <div class="icon">🛫</div>
+            <h3>Route Analysis</h3>
+            <p>Understand the relationship between source cities, destinations and flight fares.</p>
+        </div>
+
+        <div class="card reveal">
+            <div class="icon">🧠</div>
+            <h3>Machine Learning</h3>
+            <p>Train and evaluate regression models to identify a suitable fare estimation approach.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- TECHNOLOGY -->
+
+<section class="algorithms" id="technology">
+    <div class="section-heading reveal">
+        <h2>Machine Learning Technology</h2>
+        <p>Algorithms planned for model comparison and evaluation.</p>
+    </div>
+
+    <div class="grid">
+
+        <div class="card algorithm-card reveal">
+            <div class="icon">📈</div>
+            <h3>Linear Regression</h3>
+            <p>A baseline regression algorithm used to model relationships between input features and airfare.</p>
+        </div>
+
+        <div class="card algorithm-card reveal">
+            <div class="icon">🌳</div>
+            <h3>Decision Tree</h3>
+            <p>A tree-based algorithm that learns patterns through a sequence of decision rules.</p>
+        </div>
+
+        <div class="card algorithm-card reveal">
+            <div class="icon">🌲</div>
+            <h3>Random Forest</h3>
+            <p>An ensemble learning algorithm that combines multiple decision trees for regression.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- WORKFLOW -->
+
+<section id="workflow">
+    <div class="section-heading reveal">
+        <h2>How The Project Works</h2>
+        <p>Our planned machine learning development pipeline.</p>
+    </div>
+
+    <div class="workflow">
+
+        <div class="step reveal">
+            <div class="number">01</div>
+            <div>
+                <h3>Data Collection</h3>
+                <p>Collect historical flight fare records from a suitable dataset.</p>
+            </div>
+        </div>
+
+        <div class="step reveal">
+            <div class="number">02</div>
+            <div>
+                <h3>Data Preprocessing</h3>
+                <p>Clean missing values, transform categorical features and prepare journey date information.</p>
+            </div>
+        </div>
+
+        <div class="step reveal">
+            <div class="number">03</div>
+            <div>
+                <h3>Exploratory Data Analysis</h3>
+                <p>Study airfare distributions, routes, airlines and other important features.</p>
+            </div>
+        </div>
+
+        <div class="step reveal">
+            <div class="number">04</div>
+            <div>
+                <h3>Model Training</h3>
+                <p>Train multiple regression algorithms using prepared flight data.</p>
+            </div>
+        </div>
+
+        <div class="step reveal">
+            <div class="number">05</div>
+            <div>
+                <h3>Model Evaluation</h3>
+                <p>Compare models using MAE, RMSE and R² score on held-out records.</p>
+            </div>
+        </div>
+
+        <div class="step reveal">
+            <div class="number">06</div>
+            <div>
+                <h3>Web Application</h3>
+                <p>Integrate the selected trained model with a web interface for fare estimation.</p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- EVALUATION -->
+
+<section>
+    <div class="section-heading reveal">
+        <h2>Model Evaluation</h2>
+        <p>Metrics planned to measure prediction performance.</p>
+    </div>
+
+    <div class="metrics reveal">
+        <div>
+            <h2>MAE</h2>
+            <p>Mean Absolute Error</p>
+        </div>
+
+        <div>
+            <h2>RMSE</h2>
+            <p>Root Mean Squared Error</p>
+        </div>
+
+        <div>
+            <h2>R²</h2>
+            <p>Coefficient of Determination</p>
+        </div>
+    </div>
+
+    <p class="disclaimer">
+        Note: This website currently presents the project overview.
+        Actual model predictions and evaluation results will be added
+        after model development and validation. Historical airfare
+        estimates may differ from current market prices.
+    </p>
+</section>
+
+<footer>
+    <div class="logo">AIRFARE<span>AI.</span></div>
+    <p>Airfare Price Estimation and Fare Pattern Analysis</p>
+    <p>Machine Learning Academic Project</p>
+    <p>Designed for learning, research and innovation.</p>
+    <br>
+    <strong>Turning Data Into Smarter Travel Insights.</strong>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+        }
+    });
+}, { threshold: 0.12 });
+
+document.querySelectorAll(".reveal").forEach(element => {
+    observer.observe(element);
+});
+</script>
+
+</body>
+</html>
